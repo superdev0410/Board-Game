@@ -1,0 +1,15 @@
+.stone {
+  @apply w-5 h-5 rounded-full;
+}
+
+.stone-0 {
+  @apply bg-white;
+}
+
+.stone-1 {
+  @apply bg-red-600;
+}
+
+.stone-2 {
+  @apply bg-green-600;
+}
