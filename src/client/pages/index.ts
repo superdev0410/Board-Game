@@ -1,3 +1,4 @@
 import HomePage from "@/client/pages/HomePage";
+import GamePage from "@/client/pages/GamePage";
 
-export { HomePage };
+export { HomePage, GamePage };
