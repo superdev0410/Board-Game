@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 
 import { Game } from "@/client/utils/type";
 import { getGame } from "@/client/utils/api";
+import { checkWinningCondition } from "@/client/utils/helper";
 import "@/client/pages/GamePage/GamePage.style.css";
 
 const GamePage = () => {
@@ -43,6 +44,26 @@ const GamePage = () => {
     });
   }, []);
 
+  const onClickCell = useCallback((row: number, col: number) => {
+    setGame((prev) => {
+      if (prev && prev.board[row][col] === 0 && !prev.result) {
+        const updatedBoard = new Array(10);
+        for (let i = 0; i < 10; i++) {
+          updatedBoard[i] = [...prev.board[i]];
+        }
+        updatedBoard[row][col] = prev.currentPlayer;
+        const result = checkWinningCondition(updatedBoard, prev.currentPlayer);
+        return {
+          ...prev,
+          currentPlayer: result ? prev.currentPlayer : 3 - prev.currentPlayer,
+          board: updatedBoard,
+          result: result
+        };
+      }
+      return prev;
+    })
+  }, []);
+
   useEffect(() => {
     if (id) {
       fetchData(id);
@@ -55,7 +76,12 @@ const GamePage = () => {
     <Container size="2" className="h-screen flex flex-col justify-center">
       <Flex className="flex-col gap-3 items-center">
         <Flex className="w-full justify-evenly items-center">
-          <Heading>Current Player: {game.currentPlayer}</Heading>
+          <Heading>
+            {
+              game.result ? "Winner: " : "Current Player: "
+            }
+            {game.currentPlayer}
+          </Heading>
           <Button size="2">Save</Button>
         </Flex>
 
@@ -69,6 +95,7 @@ const GamePage = () => {
                       <Table.Cell
                         key={colIndex}
                         className="border-2"
+                        onClick={() => onClickCell(rowIndex, colIndex)}
                       >
                         <Box className={`stone stone-${col}`} />
                       </Table.Cell>
