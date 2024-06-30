@@ -57,6 +57,9 @@ const GamePage = () => {
         }
         updatedBoard[row][col] = prev.currentPlayer;
         const result = checkWinningCondition(updatedBoard, prev.currentPlayer);
+        if (result) {
+          toast(`Player ${prev.currentPlayer} win!`)
+        }
         return {
           ...prev,
           currentPlayer: result ? prev.currentPlayer : 3 - prev.currentPlayer,
@@ -101,8 +104,8 @@ const GamePage = () => {
 
   return (
     <>
-      <Flex className="flex-col gap-5 items-center justify-center h-screen">
-        <Flex className="w-full justify justify-evenly items-center">
+      <Flex className="flex-col gap-5 items-center h-full w-full">
+        <Flex className="w-full justify-evenly">
           {
             game.name.length > 0 &&
             <Heading>Game: {game.name}</Heading>
