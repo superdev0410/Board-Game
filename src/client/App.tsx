@@ -2,16 +2,20 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-import { HomePage, GamePage } from "@/client/pages";
+import { Layout } from "@/client/components";
+import { HomePage, GamePage, GameListPage } from "@/client/pages";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/game/:id" element={<GamePage />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />  
+            <Route path="game" element={<GamePage />} />
+            <Route path="gamelist" element={<GameListPage />} />
+            <Route path="game/:id" element={<GamePage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
 

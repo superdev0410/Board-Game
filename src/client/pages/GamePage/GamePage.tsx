@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Flex, Table, Heading, Button, Box, Link } from "@radix-ui/themes";
+import { Flex, Table, Heading, Button, Box } from "@radix-ui/themes";
 import { v4 as uuid } from "uuid";
+import { Link } from "react-router-dom";
 
 import { Game } from "@/client/utils/type";
 import { getGame, saveGame } from "@/client/utils/api";
@@ -115,7 +116,7 @@ const GamePage = () => {
               !(game.result && game.name) &&
               <Button size="2" loading={isSaving} onClick={onClickSave}>Save</Button>
             }
-            <Button size="2"><Link href="/" className="text-white">Back</Link></Button>
+            <Button size="2"><Link to="/">Back</Link></Button>
           </Flex>
         </Flex>
   
