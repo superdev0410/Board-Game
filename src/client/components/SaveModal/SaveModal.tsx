@@ -1,6 +1,6 @@
 import { useRef, memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dialog, TextField, Button, Flex, Text } from "@radix-ui/themes";
+import { Dialog, TextField, Button, Flex, Text, Section } from "@radix-ui/themes";
 import { toast } from "react-toastify";
 
 import { SaveModalProps } from "@/client/components/SaveModal/SaveModal.type";
@@ -35,8 +35,10 @@ const SaveModal = ({isOpen, game, onClose}: SaveModalProps) => {
       <Dialog.Content>
         <Dialog.Title>Input Game Name</Dialog.Title>
 
-        <Text>Name:</Text>
-        <TextField.Root ref={nameRef} />
+        <Section size="1">
+          <Text>Name:</Text>
+          <TextField.Root ref={nameRef} />
+        </Section>
 
         <Flex className="justify-end gap-4">
           <Button onClick={onClose}>Close</Button>
