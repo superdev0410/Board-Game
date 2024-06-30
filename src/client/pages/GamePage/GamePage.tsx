@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Flex, Table, Heading, Button, Container, Box } from "@radix-ui/themes";
+import { Flex, Table, Heading, Button, Box, Link } from "@radix-ui/themes";
 import { v4 as uuid } from "uuid";
 
 import { Game } from "@/client/utils/type";
-import { getGame } from "@/client/utils/api";
+import { getGame, saveGame } from "@/client/utils/api";
 import { checkWinningCondition } from "@/client/utils/helper";
+import { SaveModal } from "@/client/components";
 import "@/client/pages/GamePage/GamePage.style.css";
 
 const GamePage = () => {
@@ -18,8 +19,10 @@ const GamePage = () => {
     result: false,
     currentPlayer: 1
   });
+  const [isSaving, setSaving] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
-  const fetchData = useCallback(async (id: string) => {
+  const fetchData = async (id: string) => {
     try {
       const data = await getGame(id);
       setGame(data);
@@ -27,9 +30,9 @@ const GamePage = () => {
       toast.error(error?.toString());
       console.error(error);
     }
-  }, []);
+  };
 
-  const newGame = useCallback(() => {
+  const newGame = () => {
     const newBoard = new Array(10);
     for (let i = 0; i < 10; i++) {
       newBoard[i] = (new Array(10)).fill(0);
@@ -42,7 +45,7 @@ const GamePage = () => {
       result: false,
       board: newBoard
     });
-  }, []);
+  };
 
   const onClickCell = useCallback((row: number, col: number) => {
     setGame((prev) => {
@@ -64,6 +67,29 @@ const GamePage = () => {
     })
   }, []);
 
+  const saveGameData = async (game: Game) => {
+    try {
+      setSaving(true);
+      await saveGame(game);
+      toast.success("Save game successfully");
+    } catch (error) {
+      toast.error(error?.toString());
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onClickSave = useCallback(() => {
+    if (game.name) {      
+      saveGameData(game);
+    } else {
+      setOpen(true);
+    }
+  }, [game]);
+
+  const onClickClose = useCallback(() => setOpen(false), []);
+
   useEffect(() => {
     if (id) {
       fetchData(id);
@@ -73,19 +99,25 @@ const GamePage = () => {
   }, [id]);
 
   return (
-    <Container size="2" className="h-screen flex flex-col justify-center">
-      <Flex className="flex-col gap-3 items-center">
-        <Flex className="w-full justify-evenly items-center">
+    <>
+      <Flex className="flex-col gap-5 items-center justify-center h-screen">
+        <Flex className="w-full justify justify-evenly items-center">
+          {
+            game.name.length &&
+            <Heading>Game: {game.name}</Heading>
+          }
           <Heading>
-            {
-              game.result ? "Winner: " : "Current Player: "
-            }
+            {game.result ? "Winner: " : "Player: "}
             {game.currentPlayer}
           </Heading>
-          <Button size="2">Save</Button>
+          {
+            (!game.result || !game.name)
+              ? <Button size="2" loading={isSaving} onClick={onClickSave}>Save</Button>
+              : <Button size="2"><Link href="/">Back</Link></Button>
+          }
         </Flex>
-
-        <Table.Root className="w-fit border-collapse">
+  
+        <Table.Root size="1" className="w-fit border-collapse">
           <Table.Body>
             {
               game.board.map((row, rowIndex) => (
@@ -107,7 +139,9 @@ const GamePage = () => {
           </Table.Body>
         </Table.Root>
       </Flex>
-    </Container>
+
+      <SaveModal isOpen={isOpen} game={game} onClose={onClickClose} />
+    </>
   )
 }
 
