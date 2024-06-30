@@ -103,18 +103,20 @@ const GamePage = () => {
       <Flex className="flex-col gap-5 items-center justify-center h-screen">
         <Flex className="w-full justify justify-evenly items-center">
           {
-            game.name.length &&
+            game.name.length > 0 &&
             <Heading>Game: {game.name}</Heading>
           }
           <Heading>
             {game.result ? "Winner: " : "Player: "}
             {game.currentPlayer}
           </Heading>
-          {
-            (!game.result || !game.name)
-              ? <Button size="2" loading={isSaving} onClick={onClickSave}>Save</Button>
-              : <Button size="2"><Link href="/">Back</Link></Button>
-          }
+          <Flex className="gap-5">
+            {
+              !(game.result && game.name) &&
+              <Button size="2" loading={isSaving} onClick={onClickSave}>Save</Button>
+            }
+            <Button size="2"><Link href="/" className="text-white">Back</Link></Button>
+          </Flex>
         </Flex>
   
         <Table.Root size="1" className="w-fit border-collapse">
