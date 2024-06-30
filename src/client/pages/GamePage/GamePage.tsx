@@ -58,7 +58,7 @@ const GamePage = () => {
         updatedBoard[row][col] = prev.currentPlayer;
         const result = checkWinningCondition(updatedBoard, prev.currentPlayer);
         if (result) {
-          toast(`Player ${prev.currentPlayer} win!`)
+          toast(`Player ${prev.currentPlayer} win!`);
         }
         return {
           ...prev,
